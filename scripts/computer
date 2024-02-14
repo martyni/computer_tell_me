@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+import subprocess
+import base64
+import json
+import autoyaml
+
+INPUT_PHRASE = "Computer tell me "
+autoyaml.load_config('computer') if autoyaml.load_config('computer') != {} else autoyaml.write_config({
+           "outfile" : '/tmp/outfile',
+           "temperature" : 0.0, 
+           "topP" : 0.1,
+           "max_token_count" : 100,
+           "stop_sequence" : [],
+           "region" : "eu-central-1",
+           "model"  : "amazon.titan-text-express-v1"
+           },
+           'computer')
+
+def ask_ai(message, outfile, temperature, topP, max_token_count, stop_sequence, region, model):
+    body = {
+       "inputText": message,
+       "textGenerationConfig": {
+           "temperature": temperature,  
+           "topP": topP,
+           "maxTokenCount": max_token_count,
+           "stopSequences": stop_sequence
+        }
+    }
+    cmd = ["aws", 
+          "bedrock-runtime", 
+          "invoke-model", 
+          "--body",
+          base64.b64encode(json.dumps(body).encode('utf-8')),
+          "--model-id",
+          model,
+          outfile, 
+          "--region",
+          region]
+    process = subprocess.run(cmd, stdout=subprocess.PIPE)
+    output_text = []
+    with open(outfile) as output:
+      for _ in json.load(output)["results"]:
+         output_text.append(_["outputText"])
+    return output_text
+
+if __name__ == "__main__":
+   [ print(_) for _ in ask_ai( input(INPUT_PHRASE), **autoyaml.load_config('computer'))] 
