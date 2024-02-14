@@ -11,8 +11,8 @@ You will need:
 
 ### **Instructions**
 
- 1. ```pip install https://github.com/martyni/computer_tell_me.git```
- 2. ```computer```
+ 1. ```pip install https://github.com/martyni/computer_tell_me/archive/refs/heads/main.zip```
+ 2. type ```computer```
  3. Input your request for the AI
  4. API should respond in text form 
 
