@@ -8,4 +8,7 @@ setup(name='computer',
       author='Martyn Pratt',
       author_email='martyn.pratt@version1.com',
       scripts=['scripts/computer'],
+      install_requires=[
+          'autoyaml',
+      ],
      )
